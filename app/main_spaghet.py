@@ -31,9 +31,26 @@ def main():
     with open('app/state.yaml') as f:
         STATE = yaml.load(f,Loader=yaml.FullLoader)
 
+    # STATE['bought'] = not STATE['bought']
 
     auth_client = cbpro.PublicClient()
+    #print(auth_client.get_accounts())
+    # balance = float(auth_client.get_account("c7e286f1-e04f-46fb-ace5-34a27245c95f")['available'])
+    # balance = math.floor(balance*100)/100.0
+    #
+    # bitcoin = float(auth_client.get_account("e02112f4-5daf-4970-9ce1-563e5460e523")['available'])
 
+    #print(balance)
+
+    ##print(auth_client.get_product_order_book('BTC-USD'))
+
+    #print(auth_client.get_product_ticker(product_id='BTC-USD'))
+
+    ##print(auth_client.get_product_historic_rates('BTC-USD',granularity=60))
+
+    #print(auth_client.get_product_24hr_stats('BTC-USD'))
+
+    #this should be done with web socket instead if polling frequently?
     items = auth_client.get_product_historic_rates('BTC-USD',granularity=300)
 
     x = []
@@ -45,6 +62,9 @@ def main():
     # plt.plot(x,y,'-g')
     price = pd.Series(y)
 
+    #sma1 = ta.volatility.bollinger_mavg(price, n=n1, fillna=False)
+    # for i in range(len(x)):
+    #     plt.plot(x[i],sma1[i],'.')
 
     global product
     product = pd.DataFrame({'time' : x, 'price': y})
@@ -62,19 +82,94 @@ def main():
 
 
     stance = STATE['bought']
-
+    # money = balance
+    # btc = bitcoin
     numbuy = STATE['numbuy']
     numsell = STATE['numsell']
+    #print(money)
+    #.5% == *.005
+    # for t,s1,s2,p in zip(product['time'][n2:],product['SMA1'][n2:],product['SMA2'][n2:],product['price'][n2:]):
+    #     if not stance and (s1>s2):
+    #         stance = True
+    #         plt.plot(t,p,'.g')
+    #         btc += (money*.995)/p #only 99.5% goes in
+    #         money -= money ##fix this
+    #         print(str(money) + '    ' + str(btc))
+    #     elif stance and (s2>s1):
+    #         stance = False
+    #         plt.plot(t,p,'.r')
+    #         money += btc*p*.995 #only 99.5% comes back out
+    #         btc -= btc
+    #         print(str(money) + '    ' + str(btc))
+
 
     s1 = product['SMA1'].iloc[-1]
     s2 = product['SMA2'].iloc[-1]
+    #t = product['time'].iloc[-1]
+    # print(stance)
+    # print(s1)
+    # print(s2)
 
+
+    # if not stance and (s1 > s2):
+    #
+    #     print('Buying BTC with funds: ' + str(money))
+    #     if not BUY_LOCK:
+    #         auth_client.place_market_order(product_id='BTC-USD',side='buy',funds = money)
+    #         stance = True
+    #         numbuy+=1
+    #         STATE['buylocs']['locs'].append(float(product['time'].iloc[-1]))
+    #         STATE['buylocs']['vals'].append(float(product['price'].iloc[-1]))
+    # elif stance and (s2>s1):
+    #
+    #     print('Selling BTC with size: ' + str(btc))
+    #     if not BUY_LOCK:
+    #         auth_client.place_market_order(product_id='BTC-USD',side='sell',size = btc)
+    #         stance = False
+    #         numsell+=1
+    #         STATE['selllocs']['locs'].append(float(product['time'].iloc[-1]))
+    #         STATE['selllocs']['vals'].append(float(product['price'].iloc[-1]))
+
+
+
+    # stance = False
+    # numsell+=1
+    # STATE['selllocs']['locs'].append(float(product['time'].iloc[-1]))
+    # STATE['selllocs']['vals'].append(float(product['price'].iloc[-1]))
+
+
+    #update STATE
+
+
+
+    # print('---')
+    # print(money)
+    # print(btc)
+    # print(stance)
     if not PLT_LOCK:
         plt.show()
 
+    #time.sleep(5)
     date = datetime.now()
 
+    #mpldate = matplotlib.dates.date2num(date)
+    #print(date.isoformat())
 
+    # balance = float(auth_client.get_account("c7e286f1-e04f-46fb-ace5-34a27245c95f")['available'])
+    # bitcoin = float(auth_client.get_account("e02112f4-5daf-4970-9ce1-563e5460e523")['available'])
+
+    # STATE['bought'] = stance
+    # STATE['money'] = balance
+    # STATE['BTC'] = bitcoin
+    # STATE['last'] = date.isoformat()
+    # STATE['numbuy'] = numbuy
+    # STATE['numsell'] = numsell
+    # STATE['moneyOT'].append(balance)
+    # STATE['BTCOT'].append(bitcoin)
+    # STATE['timeOT'].append(date.timestamp())
+    # with open('app/state.yaml', 'w') as f:
+    #     yaml.dump(STATE, f)
+    #     print('Updated YAML')
 
     global STATE_P
     STATE_P = STATE

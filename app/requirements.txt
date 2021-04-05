@@ -1,0 +1,7 @@
+apscheduler
+cbpro
+flask
+matplotlib
+pandas
+plotly
+pyyaml
