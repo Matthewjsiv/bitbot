@@ -2,16 +2,16 @@ from flask import Flask, render_template, Response
 from datetime import datetime
 import io
 import cbpro
-import matplotlib.pyplot as plt
-import matplotlib
+# import matplotlib.pyplot as plt
+# import matplotlib
 import pandas as pd
 import yaml
 import math
 import os
 import time
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.backends.backend_svg import FigureCanvasSVG
-from matplotlib.figure import Figure
+# from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+# from matplotlib.backends.backend_svg import FigureCanvasSVG
+# from matplotlib.figure import Figure
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import plotly
