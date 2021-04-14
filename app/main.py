@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from datetime import datetime,timedelta
 import io
 import cbpro
@@ -27,6 +27,9 @@ STATE_P = []
 
 NSTATE = []
 
+PARAM1 = 25
+PARAM2 = 50
+
 def main():
 
     with open('app/state.yaml') as f:
@@ -54,8 +57,9 @@ def main():
     # n2 = 20
     # n1 = 20
     # n2 = 45
-    n1 = 25
-    n2 = 50
+    global PARAM1, PARAM2
+    n1 = PARAM1
+    n2 = PARAM2
     product['SMA1'] = product['price'].rolling(n1).mean()
     product['SMA2'] = product['price'].rolling(n2).mean()
 
@@ -233,6 +237,15 @@ def home_view():
     plot_m = create_plot_m()
     plot_b = create_plot_b()
     # return render_template('index.html',plot_p=plot_p, plot_m=plot_m, plot_b=plot_b)
+    return render_template('index.html',plot_p=plot_p)
+
+@app.route('/', methods=['POST'])
+def my_form_post():
+    global PARAM1, PARAM2
+    PARAM1 = int(request.form['param1'])
+    PARAM2 = int(request.form['param2'])
+    main()
+    plot_p = create_plot_p()
     return render_template('index.html',plot_p=plot_p)
 
 @app.route('/prices.png')

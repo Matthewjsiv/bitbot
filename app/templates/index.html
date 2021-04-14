@@ -119,6 +119,16 @@ body {
 
 <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script> -->
+<!-- <p>
+  Param 1      Param 2
+</p> -->
+<form method="POST">
+    <!-- <label for="fname">Param 1</label> -->
+    <input name="param1" placeholder="Param 1">
+    <!-- <label for="fname">Param 2</label> -->
+    <input name="param2" placeholder="Param 2">
+    <input type="submit">
+</form>
 <div class="chart" id="graph_p">
     <script>
         var graphs = {{plot_p | safe}};
