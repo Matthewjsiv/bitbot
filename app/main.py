@@ -25,6 +25,7 @@ PLT_LOCK = True
 product = []
 STATE_P = []
 
+NSTATE = []
 
 def main():
 
@@ -58,7 +59,27 @@ def main():
     product['SMA1'] = product['price'].rolling(n1).mean()
     product['SMA2'] = product['price'].rolling(n2).mean()
 
-
+    stance = False
+    STATE['buylocs']['locs'] = []
+    STATE['buylocs']['vals'] = []
+    STATE['selllocs']['locs'] = []
+    STATE['selllocs']['vals'] = []
+    for t,s1,s2,p in zip(product['time'][n2:],product['SMA1'][n2:],product['SMA2'][n2:],product['price'][n2:]):
+        if not stance and (s1>s2):
+            stance = True
+            # btc += (money*.995)/p #only 99.5% goes in
+            # money -= money ##fix this
+            # print(str(money) + '    ' + str(btc))
+            STATE['buylocs']['locs'].append(float(t))
+            STATE['buylocs']['vals'].append(float(s1))
+        elif stance and (s2>s1):
+            stance = False
+            # plt.plot(t,p,'.r')
+            # money += btc*p*.995 #only 99.5% comes back out
+            # btc -= btc
+            # print(str(money) + '    ' + str(btc))
+            STATE['selllocs']['locs'].append(float(t))
+            STATE['selllocs']['vals'].append(float(s2))
 
 
     stance = STATE['bought']
@@ -100,14 +121,14 @@ def create_plot_p():
     fig.add_trace(go.Scatter(x=strstamps,y=product['SMA1'],mode='lines',name='SMA1',marker_color='rgba(255,0,0,.6)'))
     fig.add_trace(go.Scatter(x=strstamps,y=product['SMA2'],mode='lines',name='SMA2',marker_color='rgba(0,0,255,.6)'))
 
-    # strstamps = []
-    # for elem in STATE_P['buylocs']['locs']:
-    #     strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-    # fig.add_trace(go.Scatter(x=strstamps,y=STATE_P['buylocs']['vals'],name='buy',mode='markers',marker_color='rgba(0, 245, 95, 1)'))
-    # strstamps = []
-    # for elem in STATE_P['selllocs']['locs']:
-    #     strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-    # fig.add_trace(go.Scatter(x=strstamps,y=STATE_P['selllocs']['vals'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
+    strstamps = []
+    for elem in STATE_P['buylocs']['locs']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_P['buylocs']['vals'],name='buy',mode='markers',marker_color='rgba(0, 245, 95, 1)'))
+    strstamps = []
+    for elem in STATE_P['selllocs']['locs']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_P['selllocs']['vals'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
     fig.update_layout(autosize=True,hovermode='x unified',title='Overview')
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
