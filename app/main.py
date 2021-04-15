@@ -22,7 +22,8 @@ import json
 BUY_LOCK = True
 PLT_LOCK = True
 
-product = []
+# product = []
+product = pd.DataFrame()
 STATE_P = []
 STATE_R = []
 
@@ -194,9 +195,9 @@ def create_plot_p():
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-    with open('plot_p.json','w') as f:
-        # print(type(graphJSON))
-        json.dump(graphJSON,f)
+    # with open('plot_p.json','w') as f:
+    #     # print(type(graphJSON))
+    #     json.dump(graphJSON,f)
 
 
     return graphJSON
@@ -277,9 +278,9 @@ def create_plot_m():
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-    with open('plot_m.json','w') as f:
-        # print(type(graphJSON))
-        json.dump(graphJSON,f)
+    # with open('plot_m.json','w') as f:
+    #     # print(type(graphJSON))
+    #     json.dump(graphJSON,f)
 
 
     return graphJSON
@@ -311,9 +312,9 @@ def create_plot_b():
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-    with open('plot_b.json','w') as f:
-        # print(type(graphJSON))
-        json.dump(graphJSON,f)
+    # with open('plot_b.json','w') as f:
+    #     # print(type(graphJSON))
+    #     json.dump(graphJSON,f)
 
 
     # with open('test.json') as f:
