@@ -238,7 +238,7 @@ def create_plot_r():
     for elem in STATE_R['selllocs']['locs']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
     fig.add_trace(go.Scatter(x=strstamps,y=STATE_R['selllocs']['valsr'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
-    fig.update_layout(autosize=True,hovermode='x unified',title='Relative Strength Index\nUpperBound = ' + str(PARAMRSI1) + '\nLowerBound = ' + str(PARAMRSI2) )
+    fig.update_layout(autosize=True,hovermode='x unified',title='Relative Strength Index with UpperBound = ' + str(PARAMRSI1) + ', and LowerBound = ' + str(PARAMRSI2) )
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
