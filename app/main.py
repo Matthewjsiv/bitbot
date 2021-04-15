@@ -345,12 +345,11 @@ def my_form_post():
     global PARAM1, PARAM2, STRATEGY, PARAMRSI1, PARAMRSI2
 
     key= list(request.form.items())[0][0]
-    print(key)
+    # print(key)
 
     if key == 'Overview':
         return render_template('overview.html')
     elif key == 'MovingAvg':
-
         STRATEGY = 'MA'
         plot_p = create_plot_p()
         return render_template('index.html', plot_p=plot_p)
@@ -359,20 +358,35 @@ def my_form_post():
         plot_r = create_plot_r()
         plot_m = create_plot_m()
         return render_template('rsi.html', plot_r=plot_r, plot_m=plot_m)
-    else:
-        if STRATEGY == 'MA':
-            PARAM1 = int(request.form['param1'])
-            PARAM2 = int(request.form['param2'])
-            main()
-            plot_p = create_plot_p()
-            return render_template('index.html',plot_p=plot_p)
-        else:
-            PARAMRSI1 = int(request.form['param1'])
-            PARAMRSI2 = int(request.form['param2'])
-            main()
-            plot_r = create_plot_r()
-            plot_m = create_plot_m()
-            return render_template('rsi.html',plot_r=plot_r, plot_m=plot_m)
+    # else:
+    #     if STRATEGY == 'MA':
+    #         PARAM1 = int(request.form['param1'])
+    #         PARAM2 = int(request.form['param2'])
+    #         main()
+    #         plot_p = create_plot_p()
+    #         return render_template('index.html',plot_p=plot_p)
+    #     elif STRATEGY == 'RSI':
+    #         PARAMRSI1 = int(request.form['param1'])
+    #         PARAMRSI2 = int(request.form['param2'])
+    #         main()
+    #         plot_r = create_plot_r()
+    #         plot_m = create_plot_m()
+    #         return render_template('rsi.html',plot_r=plot_r, plot_m=plot_m)
+    elif key == 'param1':
+
+        PARAM1 = int(request.form['param1'])
+        PARAM2 = int(request.form['param2'])
+        main()
+        plot_p = create_plot_p()
+        return render_template('index.html',plot_p=plot_p)
+    elif key == 'param1rsi':
+        PARAMRSI1 = int(request.form['param1rsi'])
+        PARAMRSI2 = int(request.form['param2rsi'])
+        main()
+        plot_r = create_plot_r()
+        plot_m = create_plot_m()
+        return render_template('rsi.html',plot_r=plot_r, plot_m=plot_m)
+
 
 
 @app.route('/prices.png')
