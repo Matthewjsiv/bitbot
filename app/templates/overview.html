@@ -136,62 +136,9 @@ body {
  </div>
 
 
-<form method="POST">
-    <!-- <label for="fname">Param 1</label> -->
-    <input name="param1" placeholder="Windowsize 1">
-    <!-- <label for="fname">Param 2</label> -->
-    <input name="param2" placeholder="Windowsize 2">
-    <input type="submit">
-</form>
-
-<div class="chart" id="graph_p">
-    <script>
-        var graphs = {{plot_p | safe}};
-        var config = {"responsive": true}
-        Plotly.setPlotConfig(config)
-        Plotly.plot('graph_p',graphs,{});
-    </script>
-</div>
-
-
-<!-- <div id="prices">
-<img src="/prices.png" alt="prices">
-</div>
-
-<div id="money">
-<img src="/money.png" alt="money">
-</div>
-
-<div id="btc">
-<img src="/btc.png" alt="btc">
-</div> -->
-
-<script>
-function myFunctionP() {
-  var x = document.getElementById("graph_p");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
-}
-function myFunctionM() {
-  var x = document.getElementById("graph_m");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
-}
-function myFunctionB() {
-  var x = document.getElementById("graph_b");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
-}
-</script>
+<p>
+OVERVIEW
+</p>
 
 </body>
 </html>

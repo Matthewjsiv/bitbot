@@ -138,21 +138,30 @@ body {
 
 <form method="POST">
     <!-- <label for="fname">Param 1</label> -->
-    <input name="param1" placeholder="Windowsize 1">
+    <input name="param1" placeholder="Upper Bound">
     <!-- <label for="fname">Param 2</label> -->
-    <input name="param2" placeholder="Windowsize 2">
+    <input name="param2" placeholder="Lower Bound">
     <input type="submit">
 </form>
 
-<div class="chart" id="graph_p">
+
+<div class="chart" id="graph_r">
     <script>
-        var graphs = {{plot_p | safe}};
+        var graphs = {{plot_r | safe}};
         var config = {"responsive": true}
         Plotly.setPlotConfig(config)
-        Plotly.plot('graph_p',graphs,{});
+        Plotly.plot('graph_r',graphs,{});
     </script>
 </div>
 
+<div class="chart" id="graph_m">
+    <script>
+        var graphs = {{plot_m | safe}};
+        var config = {"responsive": true}
+        Plotly.setPlotConfig(config)
+        Plotly.plot('graph_m',graphs,{});
+    </script>
+</div>
 
 <!-- <div id="prices">
 <img src="/prices.png" alt="prices">

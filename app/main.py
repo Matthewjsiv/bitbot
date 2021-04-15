@@ -24,11 +24,17 @@ PLT_LOCK = True
 
 product = []
 STATE_P = []
+STATE_R = []
 
 NSTATE = []
 
 PARAM1 = 25
 PARAM2 = 50
+
+PARAMRSI1 = 70
+PARAMRSI2 = 30
+
+STRATEGY = 'MA'
 
 def main():
 
@@ -58,8 +64,8 @@ def main():
     # n1 = 20
     # n2 = 45
     global PARAM1, PARAM2
-    n1 = PARAM1
-    n2 = PARAM2
+    n1 = min(PARAM1, PARAM2)
+    n2 = max(PARAM2, PARAM1)
     product['SMA1'] = product['price'].rolling(n1).mean()
     product['SMA2'] = product['price'].rolling(n2).mean()
 
@@ -105,6 +111,57 @@ def main():
     STATE_P = STATE
     # return STATE
 
+    #RSI stuff
+    rsi_period = 14
+    chg = product['price'].diff(1)
+    gain = chg.mask(chg < 0,0)
+    product['gain'] = gain
+    loss = chg.mask(chg > 0,0)
+    product['loss'] = loss
+
+    avg_gain = gain.ewm(com = rsi_period -1, min_periods = rsi_period).mean()
+    avg_loss = loss.ewm(com = rsi_period -1, min_periods = rsi_period).mean()
+
+    product['avg_gain'] = avg_gain
+    product['avg_loss'] = avg_loss
+    rs = abs(avg_gain/avg_loss)
+    rsi = 100-(100/(1+rs))
+    # print(rsi)
+    # STATE['RSI'] = rsi
+    product['RSI'] = rsi
+
+    stance = False
+    with open('app/state.yaml') as f:
+        STATE = yaml.load(f,Loader=yaml.FullLoader)
+    STATE['buylocs']['locs'] = []
+    STATE['buylocs']['vals'] = []
+    STATE['buylocs']['valsr'] = []
+    STATE['selllocs']['locs'] = []
+    STATE['selllocs']['vals'] = []
+    STATE['selllocs']['valsr'] = []
+    p1 = max(PARAMRSI1,PARAMRSI2)
+    p2 = min(PARAMRSI1,PARAMRSI2)
+    for t,r,p in zip(product['time'],product['RSI'],product['price']):
+        if not stance and (r<p2):
+            stance = True
+            # btc += (money*.995)/p #only 99.5% goes in
+            # money -= money ##fix this
+            # print(str(money) + '    ' + str(btc))
+            STATE['buylocs']['locs'].append(float(t))
+            STATE['buylocs']['vals'].append(float(p))
+            STATE['buylocs']['valsr'].append(float(r))
+        elif stance and (r>p1):
+            stance = False
+            # plt.plot(t,p,'.r')
+            # money += btc*p*.995 #only 99.5% comes back out
+            # btc -= btc
+            # print(str(money) + '    ' + str(btc))
+            STATE['selllocs']['locs'].append(float(t))
+            STATE['selllocs']['vals'].append(float(p))
+            STATE['selllocs']['valsr'].append(float(r))
+
+    global STATE_R
+    STATE_R = STATE
 
 
 def create_plot_p():
@@ -133,7 +190,7 @@ def create_plot_p():
     for elem in STATE_P['selllocs']['locs']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
     fig.add_trace(go.Scatter(x=strstamps,y=STATE_P['selllocs']['vals'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
-    fig.update_layout(autosize=True,hovermode='x unified',title='Overview')
+    fig.update_layout(autosize=True,hovermode='x unified',title='Moving Average with window size: '  + str(PARAM1) + ' vs. ' + str(PARAM2))
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -143,6 +200,54 @@ def create_plot_p():
 
 
     return graphJSON
+
+def create_plot_r():
+    # fig = px.line(product,x='time',y=['price','SMA1','SMA2'])
+    #
+    # color_discrete_map = {'vals': 'rgb(255,0,0)'}
+    # fig2 = go.Scatter(x=STATE_P['buylocs']['locs'],y=STATE_P['buylocs']['vals'],mode='markers',marker_color='rgba(0, 255, 0, .8)')
+    # fig3 = go.Scatter(x=STATE_P['selllocs']['locs'],y=STATE_P['selllocs']['vals'],mode='markers',marker_color='rgba(255, 0, 0, .8)')
+    # data = [
+    #     fig.data[0],fig.data[1],fig.data[2],fig2,fig3
+    # ]
+
+    global PARAMRSI1, PARAMRSI2
+    p1 = PARAMRSI1
+    p2 = PARAMRSI2
+    fig = go.Figure()
+    strstamps = []
+    for elem in product['time']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=product['RSI'],mode='lines',name='price',marker_color='rgba(0,135,0,.6)'))
+
+    strstamps = []
+    for elem in product['time']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=[p1]*len(product['time']),mode='lines',name='Upper Bound',marker_color='rgba(0,13,130,.6)'))
+    strstamps = []
+    for elem in product['time']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=[p2]*len(product['time']),mode='lines',name='Lower Bound',marker_color='rgba(0,13,130,.6)'))
+
+
+    strstamps = []
+    for elem in STATE_R['buylocs']['locs']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_R['buylocs']['valsr'],name='buy',mode='markers',marker_color='rgba(0, 245, 95, 1)'))
+    strstamps = []
+    for elem in STATE_R['selllocs']['locs']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_R['selllocs']['valsr'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
+    fig.update_layout(autosize=True,hovermode='x unified',title='Relative Strength Index\nUpperBound = ' + str(PARAMRSI1) + '\nLowerBound = ' + str(PARAMRSI2) )
+    data = fig
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # with open('plot_r.json','w') as f:
+    #     # print(type(graphJSON))
+    #     json.dump(graphJSON,f)
+
+    return graphJSON
+
 
 def create_plot_m():
     # fig = px.line(product,x='time',y=['price','SMA1','SMA2'])
@@ -154,22 +259,21 @@ def create_plot_m():
     #     fig.data[0],fig.data[1],fig.data[2],fig2,fig3
     # ]
 
-
     fig = go.Figure()
-
-    newdict = {'timeOT' : [], 'moneyOT': []}
-    for time,money in zip(STATE_P['timeOT'],STATE_P['moneyOT']):
-        if money > .1:
-            newdict['timeOT'].append(time)
-            newdict['moneyOT'].append(money)
+    strstamps = []
+    for elem in product['time']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=product['price'],mode='lines',name='price',marker_color='rgba(0,135,0,.6)'))
 
     strstamps = []
-    for elem in newdict['timeOT']:
+    for elem in STATE_R['buylocs']['locs']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-
-    fig.add_trace(go.Scatter(x=strstamps,y=newdict['moneyOT'],mode='lines',name='money',marker_color='rgba(0,155,0,.6)'))
-    fig.update_layout(hovermode='x unified',title='Money')
-
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_R['buylocs']['vals'],name='buy',mode='markers',marker_color='rgba(0, 245, 95, 1)'))
+    strstamps = []
+    for elem in STATE_R['selllocs']['locs']:
+        strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
+    fig.add_trace(go.Scatter(x=strstamps,y=STATE_R['selllocs']['vals'],name='sell',mode='markers',marker_color='rgba(255, 0, 0, .9)'))
+    fig.update_layout(autosize=True,hovermode='x unified',title='Price')
     data = fig
     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -177,9 +281,6 @@ def create_plot_m():
         # print(type(graphJSON))
         json.dump(graphJSON,f)
 
-
-    # with open('test.json') as f:
-    #     graphJSONn = json.load(f)
 
     return graphJSON
 
@@ -234,19 +335,45 @@ def home_view():
     # return "<h1>Welcome to " + str(stance) + "Geeks for Geeks</h1>"
     main()
     plot_p = create_plot_p()
-    plot_m = create_plot_m()
-    plot_b = create_plot_b()
+    # plot_r = create_plot_r()
+    # plot_b = create_plot_b()
     # return render_template('index.html',plot_p=plot_p, plot_m=plot_m, plot_b=plot_b)
     return render_template('index.html',plot_p=plot_p)
 
 @app.route('/', methods=['POST'])
 def my_form_post():
-    global PARAM1, PARAM2
-    PARAM1 = int(request.form['param1'])
-    PARAM2 = int(request.form['param2'])
-    main()
-    plot_p = create_plot_p()
-    return render_template('index.html',plot_p=plot_p)
+    global PARAM1, PARAM2, STRATEGY, PARAMRSI1, PARAMRSI2
+
+    key= list(request.form.items())[0][0]
+    print(key)
+
+    if key == 'Overview':
+        return render_template('overview.html')
+    elif key == 'MovingAvg':
+
+        STRATEGY = 'MA'
+        plot_p = create_plot_p()
+        return render_template('index.html', plot_p=plot_p)
+    elif key == 'RSI':
+        STRATEGY = 'RSI'
+        plot_r = create_plot_r()
+        plot_m = create_plot_m()
+        return render_template('rsi.html', plot_r=plot_r, plot_m=plot_m)
+    else:
+        if STRATEGY == 'MA':
+            PARAM1 = int(request.form['param1'])
+            PARAM2 = int(request.form['param2'])
+            main()
+            plot_p = create_plot_p()
+            return render_template('index.html',plot_p=plot_p)
+        else:
+            PARAMRSI1 = int(request.form['param1'])
+            PARAMRSI2 = int(request.form['param2'])
+            main()
+            plot_r = create_plot_r()
+            plot_m = create_plot_m()
+            return render_template('rsi.html',plot_r=plot_r, plot_m=plot_m)
+
 
 @app.route('/prices.png')
 def plot_prices():
