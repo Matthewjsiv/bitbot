@@ -79,6 +79,11 @@ body {
   display: none;
 }
 
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
 @media screen and (max-width: 600px) {
   .topnav a:not(:first-child) {display: none;}
   .topnav a.icon {
@@ -100,11 +105,17 @@ body {
     text-align: left;
   }
 }
+
+h1 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 64px; font-weight: 700; line-height: 64px; margin: 0 0 0; padding: 20px 30px; text-align: center; text-transform: uppercase; }
+
+h2 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 32px; font-weight: 700; line-height: 48px; margin: 0 0 24px; padding: 0 30px; text-align: center; text-transform: uppercase; }
+
 </style>
 </head>
+
 <body>
 
-<div class="topnav" id="myTopnav">
+<!-- <div class="topnav" id="myTopnav">
   <a  class="myButton" onclick="myFunctionP()"> Overview </a>
   <!-- <a class="myButton" onclick="myFunctionM()"> Money </a>
   <a class="myButton" onclick="myFunctionB()"> BTC </a> -->
@@ -112,8 +123,8 @@ body {
   <a href="#about">About</a> -->
   <!-- <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
-  </a> -->
-</div>
+  </a>
+</div> -->
 <h1>BitBot</h1>
 <!-- <img src="/prices.png" alt="prices">
 <!-- <img src="/money.png" alt="money"> -->
@@ -125,7 +136,7 @@ body {
   Param 1      Param 2
 </p> -->
 
-<div class="container">
+<div class="container flex">
     <form method="POST">
         <input type="submit" name = 'Overview' value="Overview" >
     </form>
@@ -135,12 +146,10 @@ body {
     <form method="POST">
         <input type="submit" name = 'RSI' value="Relative Strength Index" >
     </form>
- </div>
+</div>
 
 
-<p>
-OVERVIEW
-</p>
+<h2>OVERVIEW</h2>
 
 </body>
 </html>

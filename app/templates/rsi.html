@@ -48,34 +48,9 @@ body {
 	top:1px;
 }
 
-
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.topnav a {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.topnav a.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.topnav .icon {
-  display: none;
+.flex {
+  display: flex;
+  justify-content: center;
 }
 
 @media screen and (max-width: 600px) {
@@ -99,12 +74,18 @@ body {
     text-align: left;
   }
 }
+
+h1 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 64px; font-weight: 700; line-height: 64px; margin: 0 0 0; padding: 20px 30px; text-align: center; text-transform: uppercase; }
+
+h2 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 32px; font-weight: 700; line-height: 48px; margin: 0 0 24px; padding: 0 30px; text-align: center; text-transform: uppercase; }
+
 </style>
 </head>
+
 <body>
 
-<div class="topnav" id="myTopnav">
-  <a  class="myButton" onclick="myFunctionP()"> Overview </a>
+<!-- <div class="topnav" id="myTopnav">
+  <a  class="myButton" onclick="myFunctionP()"> Overview </a> -->
   <!-- <a class="myButton" onclick="myFunctionM()"> Money </a>
   <a class="myButton" onclick="myFunctionB()"> BTC </a> -->
   <!-- <a href="#contact">Contact</a>
@@ -112,7 +93,7 @@ body {
   <!-- <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
   </a> -->
-</div>
+<!-- </div> -->
 <h1>BitBot</h1>
 <!-- <img src="/prices.png" alt="prices">
 <!-- <img src="/money.png" alt="money"> -->
@@ -124,7 +105,7 @@ body {
   Param 1      Param 2
 </p> -->
 
-<div class="container">
+<div class="container flex">
     <form method="POST">
         <input type="submit" name = 'Overview' value="Overview" >
     </form>
@@ -136,6 +117,7 @@ body {
     </form>
  </div>
 
+<h2>RSI</h2>
 
 <form method="POST">
     <!-- <label for="fname">Param 1</label> -->
@@ -144,7 +126,6 @@ body {
     <input name="param2rsi" placeholder="Lower Bound">
     <input type="submit">
 </form>
-
 
 <div class="chart" id="graph_r">
     <script>
