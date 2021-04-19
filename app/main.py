@@ -179,7 +179,7 @@ def create_plot_p():
     strstamps = []
     for elem in product['time']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-    fig.add_trace(go.Scatter(x=strstamps,y=product['price'],mode='lines',name='price',marker_color='rgba(0,135,0,.6)'))
+    fig.add_trace(go.Scatter(x=strstamps,y=product['price'],mode='lines',name='Bitcoin price',marker_color='rgba(0,135,0,.6)'))
     fig.add_trace(go.Scatter(x=strstamps,y=product['SMA1'],mode='lines',name='SMA1',marker_color='rgba(255,0,0,.6)'))
     fig.add_trace(go.Scatter(x=strstamps,y=product['SMA2'],mode='lines',name='SMA2',marker_color='rgba(0,0,255,.6)'))
 
@@ -219,7 +219,7 @@ def create_plot_r():
     strstamps = []
     for elem in product['time']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-    fig.add_trace(go.Scatter(x=strstamps,y=product['RSI'],mode='lines',name='price',marker_color='rgba(0,135,0,.6)'))
+    fig.add_trace(go.Scatter(x=strstamps,y=product['RSI'],mode='lines',name='RSI',marker_color='rgba(0,135,0,.6)'))
 
     strstamps = []
     for elem in product['time']:
@@ -264,7 +264,7 @@ def create_plot_m():
     strstamps = []
     for elem in product['time']:
         strstamps.append(datetime.fromtimestamp(elem).strftime('%Y-%m-%d %H:%M:%S'))
-    fig.add_trace(go.Scatter(x=strstamps,y=product['price'],mode='lines',name='price',marker_color='rgba(0,135,0,.6)'))
+    fig.add_trace(go.Scatter(x=strstamps,y=product['price'],mode='lines',name='Bitcoin price',marker_color='rgba(0,135,0,.6)'))
 
     strstamps = []
     for elem in STATE_R['buylocs']['locs']:
