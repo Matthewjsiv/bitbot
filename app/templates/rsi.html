@@ -79,6 +79,14 @@ h1 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 64p
 
 h2 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 32px; font-weight: 700; line-height: 48px; margin: 0 0 24px; padding: 0 30px; text-align: center; text-transform: uppercase; }
 
+.center {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.center p {
+text-align: center;
+}
+
 </style>
 </head>
 
@@ -118,7 +126,11 @@ h2 { color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 32p
  </div>
 
 <h2>RSI</h2>
-
+<div class="center">
+<p>
+The lower and upper bounds of RSI generate points of interest based off of their intersections with the stock.  The stock breaching the upper bound indicates a sell point (red).  The stock breaching the lower bound indicates a buy point (green).
+</p>
+<div>
 <form method="POST">
     <!-- <label for="fname">Param 1</label> -->
     <input name="param1rsi" placeholder="Upper Bound">
